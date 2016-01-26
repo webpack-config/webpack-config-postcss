@@ -75,6 +75,7 @@ export default (options = []) => (config) => {
           target,
           external,
           minimize,
+          sourceMap: true,
         }),
       }],
     },
