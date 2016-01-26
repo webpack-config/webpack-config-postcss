@@ -68,6 +68,7 @@ export default (options = []) => (config) => {
     // Module settings.
     module: {
       loaders: [{
+        name: 'postcss',
         test: IS_STYLE,
         loader: loaders({
           loader: require.resolve('postcss-loader'),
