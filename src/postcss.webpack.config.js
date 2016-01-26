@@ -75,7 +75,7 @@ export default (options = []) => (config) => {
           loader: require.resolve('postcss-loader'),
           target,
           external,
-          minimize
+          minimize,
         }),
       }],
     },
