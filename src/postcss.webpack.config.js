@@ -35,6 +35,7 @@ const loaders = ({target, external, minimize, loader}) => {
     importLoaders: 1,
     localIdentName: '[name]-[local]-[hash:base64:5]',
     minimize: minimize,
+    sourceMap: true,
   };
   const cssLoader = require.resolve('css-loader');
   const cssLocals = require.resolve('css-loader/locals');
@@ -74,8 +75,7 @@ export default (options = []) => (config) => {
           loader: require.resolve('postcss-loader'),
           target,
           external,
-          minimize,
-          sourceMap: true,
+          minimize
         }),
       }],
     },
