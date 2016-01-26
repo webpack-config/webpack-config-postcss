@@ -1,0 +1,38 @@
+{
+  "name": "webpack-config-postcss",
+  "version": "0.2.0",
+  "author": "Izaak Schroeder <izaak.schroeder@gmail.com>",
+  "repository": "izaakschroeder/webpack-config-metalab",
+  "license": "CC0-1.0",
+  "main": "dist/postcss.webpack.config.js",
+  "scripts": {
+    "prepublish": "./node_modules/.bin/babel -s -d dist src",
+    "lint": "./node_modules/.bin/eslint .",
+    "test": "npm run lint"
+  },
+  "dependencies": {
+    "autoprefixer": "^6.0.3",
+    "css-loader": "^0.23.1",
+    "extract-text-webpack-plugin": "^0.9.0",
+    "postcss-import": "^7.1.0",
+    "postcss-loader": "^0.8.0",
+    "postcss-require": "^0.1.0",
+    "precss": "^1.3.0",
+    "style-loader": "^0.13.0",
+    "webpack-partial": "^1.0.0"
+  },
+  "peerDependencies": {
+    "postcss": ">=5.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.4.5",
+    "babel-preset-metalab": "^0.2.0",
+    "eslint": "^1.10.3",
+    "eslint-config-metalab": "^2.0.0-beta.1",
+    "eslint-plugin-filenames": "^0.2.0",
+    "eslint-plugin-import": "^0.12.1",
+    "eslint-plugin-react": "^3.16.0",
+    "postcss": "^5.0.14",
+    "webpack": "^1.12.12"
+  }
+}
