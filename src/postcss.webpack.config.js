@@ -52,7 +52,10 @@ const loaders = ({target, external, minimize, loader}) => {
   return `${pack(cssLocals, config)}!${loader}`;
 };
 
-export default (options = []) => (config) => {
+export default ({
+  options = [],
+  filename = '[name].css',
+} = {}) => (config) => {
   const {target} = config;
   const env = process.env.NODE_ENV || 'development';
   const hot = process.env.HOT || false;
@@ -126,8 +129,7 @@ export default (options = []) => (config) => {
         // Some crawlers or things with Javascript disabled prefer normal CSS
         // instead of Javascript injected CSS, so this plugin allows for the
         // collection of the generated CSS into its own file.
-        // .[contenthash]
-        new ExtractTextPlugin('[name].css'),
+        new ExtractTextPlugin(filename),
       ] : []),
     ],
   });
