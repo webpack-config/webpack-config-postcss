@@ -4,7 +4,6 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 
 // `postcss` modules.
 import autoprefixer from 'autoprefixer';
-import precss from 'precss';
 import cssimport from 'postcss-import';
 import constants from 'postcss-require';
 
@@ -129,7 +128,6 @@ export default ({
             });
           },
         }),
-        precss,
         ...(Array.isArray(options) ? options : options(webpack)),
         autoprefixer({
           browsers: ['last 2 versions'],
