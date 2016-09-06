@@ -10,6 +10,7 @@ import constants from 'postcss-require';
 
 // Regular expression used to detect what kind of files to process.
 const IS_STYLE = /\.(scss|sass|css)$/;
+const IS_CSS_JS = /\.css\.js$/;
 
 /**
  * Convert a loader string and query object into a complete loader string.
@@ -76,6 +77,18 @@ export default ({
         test: IS_STYLE,
         loader: loaders({
           loader: require.resolve('postcss-loader'),
+          target,
+          external,
+          minimize,
+        }),
+      }, {
+        name: 'js-css',
+        test: IS_CSS_JS,
+        loader: loaders({
+          loader: [
+            require.resolve('postcss-loader'),
+            require.resolve('css-js-loader'),
+          ].join('!'),
           target,
           external,
           minimize,
