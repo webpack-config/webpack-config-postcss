@@ -180,5 +180,5 @@ export default ({
   // Add postcss-loader config.
   postcssConfig({options, autoprefixer}),
   // Add ExtractTextPlugin instance.
-  extractPlugin(!!extract)
+  extractPlugin(extract)
 );
