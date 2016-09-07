@@ -1,5 +1,4 @@
 import compose from 'lodash/fp/compose';
-import identity from 'lodash/fp/identity';
 import {loader, plugin, partial} from 'webpack-partial';
 
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
@@ -146,8 +145,8 @@ const postcssConfig = ({options, autoprefixer: autoprefixerConfig}) =>
  */
 const extractPlugin = (extract) => (config) =>
   !!extract && config.target === 'web'
-    ? plugin(new ExtractTextPlugin(extract))
-    : identity;
+    ? plugin(new ExtractTextPlugin(extract), config)
+    : config;
 
 /**
  * Create a postcss webpack config partial function.
