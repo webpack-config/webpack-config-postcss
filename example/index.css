@@ -1,0 +1,9 @@
+:global {
+  html {
+    background: red;
+  }
+}
+
+.foo {
+  background: green;
+}

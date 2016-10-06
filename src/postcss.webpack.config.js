@@ -43,10 +43,10 @@ const loaders = ({target, external, minimize, loader}) => {
   const styleLoader = require.resolve('style-loader');
   if (target === 'web') {
     if (external) {
-      return ExtractTextPlugin.extract(
-        styleLoader,
-        `${pack(cssLoader, config)}!${loader}`
-      );
+      return ExtractTextPlugin.extract({
+        fallbackLoader: styleLoader,
+        loader: `${pack(cssLoader, config)}!${loader}`,
+      });
     }
     return `${styleLoader}!${pack(cssLoader, config)}!${loader}`;
   }
@@ -57,7 +57,7 @@ export default ({
   options = [],
   filename = '[name].css',
 } = {}) => (config) => {
-  const {target} = config;
+  const {target = 'web'} = config;
   const env = process.env.NODE_ENV || 'development';
   const hot = process.env.HOT || false;
   const production = env === 'production';
@@ -69,26 +69,71 @@ export default ({
     throw new TypeError('`options` must be array or function!');
   }
 
+  const postcss = (webpack) => {
+    return [
+      cssimport({
+        // Make webpack acknowledge imported files.
+        onImport: (files) => files.forEach((dep) =>
+          webpack.addDependency(dep)),
+        resolve: (id, {basedir}) =>
+          webpack.resolveSync(basedir, id),
+      }),
+      constants({
+        require: (request, _, done) => {
+          webpack.loadModule(request, (err, source) => {
+            if (err) {
+              done(err);
+            } else {
+              let result = null;
+              try {
+                result = webpack.exec(source, request);
+                // interop for ES6 modules
+                if (result.__esModule && result.default) {
+                  result = result.default;
+                }
+              } catch (e) {
+                done(e);
+                return;
+              }
+              // Don't need to call `this.addDependency` since the
+              // `loadModule` function takes care of it.
+              done(null, result);
+            }
+          });
+        },
+      }),
+      precss,
+      ...(Array.isArray(options) ? options : options(webpack)),
+      autoprefixer({
+        browsers: ['last 2 versions'],
+      }),
+    ];
+  };
+
   return partial(config, {
     // Module settings.
     module: {
       loaders: [{
-        name: 'postcss',
         test: IS_STYLE,
         loader: loaders({
           loader: require.resolve('postcss-loader'),
+          options: {
+            postcss,
+          },
           target,
           external,
           minimize,
         }),
       }, {
-        name: 'js-css',
         test: IS_CSS_JS,
         loader: loaders({
           loader: [
             require.resolve('postcss-loader'),
             require.resolve('css-js-loader'),
           ].join('!'),
+          options: {
+            postcss,
+          },
           target,
           external,
           minimize,
@@ -96,53 +141,12 @@ export default ({
       }],
     },
 
-    postcss(webpack) {
-      return [
-        cssimport({
-          // Make webpack acknowledge imported files.
-          onImport: (files) => files.forEach((dep) =>
-            webpack.addDependency(dep)),
-          resolve: (id, {basedir}) =>
-            webpack.resolveSync(basedir, id),
-        }),
-        constants({
-          require: (request, _, done) => {
-            webpack.loadModule(request, (err, source) => {
-              if (err) {
-                done(err);
-              } else {
-                let result = null;
-                try {
-                  result = webpack.exec(source, request);
-                  // interop for ES6 modules
-                  if (result.__esModule && result.default) {
-                    result = result.default;
-                  }
-                } catch (e) {
-                  done(e);
-                  return;
-                }
-                // Don't need to call `this.addDependency` since the
-                // `loadModule` function takes care of it.
-                done(null, result);
-              }
-            });
-          },
-        }),
-        precss,
-        ...(Array.isArray(options) ? options : options(webpack)),
-        autoprefixer({
-          browsers: ['last 2 versions'],
-        }),
-      ];
-    },
-
     plugins: [
       ...(external ? [
         // Some crawlers or things with Javascript disabled prefer normal CSS
         // instead of Javascript injected CSS, so this plugin allows for the
         // collection of the generated CSS into its own file.
-        new ExtractTextPlugin(filename),
+        new ExtractTextPlugin({filename}),
       ] : []),
     ],
   });
