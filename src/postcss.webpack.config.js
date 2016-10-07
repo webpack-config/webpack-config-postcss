@@ -2,7 +2,6 @@ import {loader, plugin} from 'webpack-partial';
 import compose from 'lodash/fp/compose';
 import identity from 'lodash/fp/identity';
 
-import purdy from 'purdy';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 
 // `postcss` modules.
