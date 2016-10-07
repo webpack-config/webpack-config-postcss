@@ -1,4 +1,6 @@
-import partial from 'webpack-partial';
+import {loader, plugin} from 'webpack-partial';
+import compose from 'lodash/fp/compose';
+import identity from 'lodash/fp/identity';
 
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 
@@ -110,44 +112,33 @@ export default ({
     ];
   };
 
-  return partial(config, {
-    // Module settings.
-    module: {
-      loaders: [{
-        test: IS_STYLE,
-        loader: loaders({
-          loader: require.resolve('postcss-loader'),
-          options: {
-            postcss,
-          },
-          target,
-          external,
-          minimize,
-        }),
-      }, {
-        test: IS_CSS_JS,
-        loader: loaders({
-          loader: [
-            require.resolve('postcss-loader'),
-            require.resolve('css-js-loader'),
-          ].join('!'),
-          options: {
-            postcss,
-          },
-          target,
-          external,
-          minimize,
-        }),
-      }],
-    },
-
-    plugins: [
-      ...(external ? [
-        // Some crawlers or things with Javascript disabled prefer normal CSS
-        // instead of Javascript injected CSS, so this plugin allows for the
-        // collection of the generated CSS into its own file.
-        new ExtractTextPlugin({filename}),
-      ] : []),
-    ],
-  });
+  return compose(
+    loader({
+      test: IS_STYLE,
+      loader: loaders({
+        loader: require.resolve('postcss-loader'),
+        target,
+        external,
+        minimize,
+      }),
+      query: postcss,
+    }),
+    loader({
+      test: IS_CSS_JS,
+      loader: loaders({
+        loader: [
+          require.resolve('postcss-loader'),
+          require.resolve('css-js-loader'),
+        ].join('!'),
+        target,
+        external,
+        minimize,
+      }),
+      query: postcss,
+    }),
+    // Some crawlers or things with Javascript disabled prefer normal CSS
+    // instead of Javascript injected CSS, so this plugin allows for the
+    // collection of the generated CSS into its own file.
+    external ? plugin(new ExtractTextPlugin({filename})) : identity
+  )(config);
 };
