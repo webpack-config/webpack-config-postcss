@@ -20,7 +20,7 @@
     "extract-text-webpack-plugin": "izaakschroeder/extract-text-webpack-plugin#pass-proper-loader-options",
     "lodash": "^4.16.4",
     "postcss-import": "8.1.0",
-    "postcss-loader": "izaakschroeder/postcss-loader#options-via-query",
+    "postcss-loader": "postcss/postcss-loader",
     "postcss-require": "^0.1.0",
     "style-loader": "^0.13.1",
     "webpack-partial": "^2.0.0"

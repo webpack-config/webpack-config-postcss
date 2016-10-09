@@ -124,7 +124,7 @@ export default ({
       loaders: loaders({
         loaders: [{
           loader: require.resolve('postcss-loader'),
-          query: {options: postcss},
+          query: {plugins: postcss},
         }],
         target,
         external,
@@ -137,7 +137,7 @@ export default ({
       loaders: loaders({
         loaders: [{
           loader: require.resolve('postcss-loader'),
-          query: {options: postcss},
+          query: {plugins: postcss},
         }, {
           loader: require.resolve('css-js-loader'),
         }],
