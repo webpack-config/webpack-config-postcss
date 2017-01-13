@@ -1,6 +1,6 @@
 {
   "name": "webpack-config-postcss",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "author": "Izaak Schroeder <izaak.schroeder@gmail.com>",
   "repository": "izaakschroeder/webpack-config-metalab",
   "license": "CC0-1.0",
